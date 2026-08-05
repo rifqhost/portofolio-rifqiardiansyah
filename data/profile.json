@@ -1,0 +1,67 @@
+{
+  "name": "Rifqi Ardiansyah",
+  "shortName": "Rifqi",
+  "initials": "RA",
+  "role": "Web Developer",
+  "roles": ["Web Developer", "Backend Developer", "Full Stack Enthusiast"],
+  "status": "Siswa SMK Jurusan Rekayasa Perangkat Lunak (RPL)",
+  "avatar": "/images/avatar.svg",
+  "tagline": "Membangun aplikasi web modern, cepat, dan scalable.",
+  "about": [
+    "Halo! Saya Rifqi Ardiansyah, siswa SMK jurusan Rekayasa Perangkat Lunak (RPL) yang memiliki ketertarikan besar terhadap Web Development dan Backend Development.",
+    "Saya senang mempelajari teknologi baru dan terus mengembangkan kemampuan untuk membangun aplikasi web modern yang cepat, aman, dan mudah digunakan.",
+    "Dari merancang REST API hingga membangun antarmuka yang bersih dan responsif, saya selalu berusaha memberikan hasil terbaik di setiap proyek yang saya kerjakan."
+  ],
+  "highlights": [
+    {
+      "icon": "Code2",
+      "title": "Web Development",
+      "description": "Membangun antarmuka modern, responsif, dan mudah digunakan dengan React, Vite, dan Tailwind CSS."
+    },
+    {
+      "icon": "Server",
+      "title": "Backend Development",
+      "description": "Merancang REST API dan logika server yang terstruktur dengan Node.js dan Express."
+    },
+    {
+      "icon": "Rocket",
+      "title": "Fast Learner",
+      "description": "Selalu belajar teknologi baru dan mampu beradaptasi dengan cepat terhadap perubahan."
+    },
+    {
+      "icon": "Users",
+      "title": "Team Player",
+      "description": "Terbiasa bekerja dalam tim, berkomunikasi jelas, dan membagi tanggung jawab dengan baik."
+    }
+  ],
+  "personalInfo": {
+    "fullName": "Rifqi Ardiansyah",
+    "role": "Web Developer & Backend Developer",
+    "status": "Siswa SMK Jurusan RPL",
+    "location": "Indonesia",
+    "email": "rifqiardiansyah@example.com",
+    "education": "SMK - Rekayasa Perangkat Lunak",
+    "languages": "Indonesia (Aktif), English (Learning)"
+  },
+  "socials": {
+    "github": "https://github.com/rifqiardiansyah",
+    "linkedin": "https://www.linkedin.com/in/rifqiardiansyah",
+    "whatsapp": "6281234567890",
+    "email": "rifqiardiansyah@example.com",
+    "discord": "rifqi_dev",
+    "instagram": "https://instagram.com/rifqiardiansyah"
+  },
+  "cv": "/uploads/cv-rifqi-ardiansyah.pdf",
+  "stats": {
+    "projects": 2,
+    "techStack": 12,
+    "github": 15
+  },
+  "seo": {
+    "title": "Rifqi Ardiansyah - Web Developer & Backend Developer",
+    "description": "Portfolio Rifqi Ardiansyah, siswa SMK jurusan Rekayasa Perangkat Lunak (RPL) yang fokus pada Web Development dan Backend Development.",
+    "keywords": "rifqi ardiansyah, web developer, backend developer, portfolio, RPL, React, Node.js, Express",
+    "ogImage": "/images/og-image.svg",
+    "url": "https://rifqiardiansyah.vercel.app"
+  }
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "t-1",
+    "name": "Bu Sari Rahmawati",
+    "role": "Guru Pembimbing RPL",
+    "avatar": "/images/avatar.svg",
+    "message": "Rifqi adalah siswa yang tekun dan punya rasa ingin tahu tinggi. Kemampuannya dalam membangun aplikasi web sudah melampaui rata-rata teman sebayanya. Sangat menjanjikan untuk dunia kerja.",
+    "rating": 5,
+    "date": "2025-07-15"
+  },
+  {
+    "id": "t-2",
+    "name": "Ahmad Fauzi",
+    "role": "Teman Satu Tim Proyek",
+    "avatar": "/images/avatar.svg",
+    "message": "Bekerja bareng Rifqi sangat menyenangkan. Dia bisa diandalkan di bagian backend dan selalu memastikan API yang dibuatnya rapi dan jelas didokumentasikan.",
+    "rating": 5,
+    "date": "2025-07-01"
+  },
+  {
+    "id": "t-3",
+    "name": "Devi Anggraini",
+    "role": "Klien Website",
+    "avatar": "/images/avatar.svg",
+    "message": "Website yang dibuat Rifqi sesuai dengan keinginan saya. Komunikasi lancar, hasilnya cepat, dan tampilannya profesional. Sangat direkomendasikan!",
+    "rating": 4,
+    "date": "2025-06-20"
+  }
+]

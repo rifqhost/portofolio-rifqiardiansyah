@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f0d1a"/>
+      <stop offset="0.55" stop-color="#241d3d"/>
+      <stop offset="1" stop-color="#3b2f6e"/>
+    </linearGradient>
+    <linearGradient id="txt" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#cfc0ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g opacity="0.2">
+    <circle cx="180" cy="160" r="240" fill="#7c5cf0"/>
+    <circle cx="1040" cy="500" r="280" fill="#9a7bff"/>
+    <rect x="0" y="0" width="1200" height="630" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+  </g>
+  <text x="100" y="290" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="700" fill="url(#txt)">Rifqi Ardiansyah</text>
+  <text x="100" y="365" font-family="Arial, Helvetica, sans-serif" font-size="34" fill="#d9ccff">Web Developer &amp; Backend Developer</text>
+  <text x="100" y="425" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#9a86d4">SMK · Rekayasa Perangkat Lunak (RPL)</text>
+</svg>

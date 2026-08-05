@@ -1,0 +1,38 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# build
+dist/
+client/dist/
+build/
+
+# environment
+.env
+.env.local
+.env.production
+
+# logs
+logs/
+*.log
+npm-debug.log*
+
+# uploads runtime
+data/uploads/*
+
+# editor & os
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# vercel
+.vercel/
+
+# personal notes
+jalan.txt
+
+# build cache
+*.tsbuildinfo

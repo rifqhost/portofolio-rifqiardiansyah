@@ -1,0 +1,44 @@
+[
+  {
+    "id": "b-rest-api",
+    "slug": "mengenal-rest-api-untuk-pemula",
+    "title": "Mengenal REST API untuk Pemula",
+    "excerpt": "Apa itu REST API? Kenapa penting? Panduan sederhana memahami konsep REST API dengan contoh Node.js dan Express.",
+    "content": "REST API adalah salah satu konsep paling penting dalam pengembangan web modern. Artikel ini menjelaskan konsep dasarnya dengan bahasa sederhana.\n\n## Apa itu REST API?\n\nREST (Representational State Transfer) adalah gaya arsitektur untuk membangun layanan web. API (Application Programming Interface) adalah jembatan yang menghubungkan client dengan server.\n\nKetika kamu membuka aplikasi mobile atau website, client mengirimkan permintaan (request) ke server, dan server membalas dengan data (response). REST API menentukan aturan bagaimana keduanya berkomunikasi.\n\n## Metode HTTP Dasar\n\n- GET untuk mengambil data\n- POST untuk membuat data baru\n- PUT untuk memperbarui data\n- DELETE untuk menghapus data\n\n## Contoh Sederhana dengan Express\n\n```js\napp.get('/api/posts', (req, res) => {\n  res.json(posts)\n})\n```\n\nRute di atas akan mengembalikan daftar postingan dalam format JSON ketika diakses.\n\n## Kenapa REST API Penting?\n\nKarena memisahkan frontend dan backend, REST API membuat aplikasi lebih mudah dikembangkan, diuji, dan dipelihara. Satu API yang sama bisa melayani website, aplikasi mobile, dan integrasi pihak ketiga.\n\nSelamat belajar! Mulailah dari proyek kecil seperti buku tamu atau aplikasi todo list.",
+    "cover": "/images/blog-rest-api.svg",
+    "category": "Backend",
+    "tags": ["API", "Node.js", "Express", "Belajar"],
+    "author": "Rifqi Ardiansyah",
+    "date": "2025-06-10",
+    "readTime": 5,
+    "featured": true
+  },
+  {
+    "id": "b-react-vite",
+    "slug": "belajar-react-dengan-vite-panduan-singkat",
+    "title": "Belajar React dengan Vite: Panduan Singkat",
+    "excerpt": "Mulai project React dalam hitungan detik menggunakan Vite. Panduan instalasi, struktur folder, dan alasan Vite sangat cepat.",
+    "content": "Vite adalah build tool modern yang sangat populer karena kecepatannya. Panduan ini membantu kamu memulai project React dengan Vite.\n\n## Kenapa Vite?\n\nVite memanfaatkan native ES modules di browser, sehingga proses development terasa instan. Hot Module Replacement (HMR) juga sangat responsif.\n\n## Membuat Project Baru\n\n```bash\nnpm create vite@latest my-app -- --template react-ts\ncd my-app\nnpm install\nnpm run dev\n```\n\nDengan template react-ts, kamu sudah mendapatkan TypeScript secara default.\n\n## Struktur Folder\n\n- src/components: komponen UI reusable\n- src/pages: halaman aplikasi\n- src/hooks: custom hooks\n- src/utils: fungsi bantuan\n\n## Tips Belajar React\n\n1. Pahami konsep state dan props\n2. Biasakan menulis komponen kecil yang reusable\n3. Pelajari custom hooks setelah paham dasar\n4. Gunakan TypeScript sejak awal\n\nReact dan Vite adalah kombinasi yang luar biasa untuk membangun aplikasi web modern. Selamat mencoba!",
+    "cover": "/images/blog-react.svg",
+    "category": "Frontend",
+    "tags": ["React", "Vite", "TypeScript", "Frontend"],
+    "author": "Rifqi Ardiansyah",
+    "date": "2025-07-02",
+    "readTime": 4,
+    "featured": false
+  },
+  {
+    "id": "b-json-storage",
+    "slug": "membangun-aplikasi-dengan-json-storage",
+    "title": "Membangun Aplikasi dengan JSON Storage",
+    "excerpt": "Belajar menyimpan data aplikasi sederhana ke file JSON menggunakan Node.js. Cocok untuk belajar backend tanpa database.",
+    "content": "Tidak semua aplikasi butuh database besar. Untuk belajar dan prototipe, menyimpan data ke file JSON sangat efektif dan mudah dipahami.\n\n## Kenapa JSON Storage?\n\n- Mudah dibaca dan dipahami\n- Tidak perlu install database\n- Cocok untuk tugas sekolah dan prototipe\n- Tetap bisa dimigrasi ke database sungguhan nanti\n\n## Implementasi Sederhana\n\nKita bisa menggunakan modul fs bawaan Node.js.\n\n```js\nimport fs from 'fs/promises'\n\nasync function readData(file) {\n  const raw = await fs.readFile(file, 'utf8')\n  return JSON.parse(raw)\n}\n\nasync function writeData(file, data) {\n  await fs.writeFile(file, JSON.stringify(data, null, 2))\n}\n```\n\n## Tips Keamanan\n\n- Jangan pernah menyimpan password dalam bentuk plain text\n- Validasi semua input dari user\n- Buat backup data secara berkala\n\n## Kapan Harus Pindah ke Database?\n\nKetika data mulai besar, butuh query kompleks, atau ada banyak pengguna bersamaan, saatnya mempertimbangkan database seperti MySQL atau PostgreSQL.\n\nNamun untuk belajar dan proyek skala kecil, JSON storage adalah pilihan yang tepat dan menyenangkan!",
+    "cover": "/images/blog-json.svg",
+    "category": "Backend",
+    "tags": ["Node.js", "JSON", "Storage", "Belajar"],
+    "author": "Rifqi Ardiansyah",
+    "date": "2025-07-20",
+    "readTime": 3,
+    "featured": true
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "name": "Rifqi Ardiansyah - Web & Backend Developer",
+  "short_name": "Rifqi Dev",
+  "description": "Portfolio Rifqi Ardiansyah, siswa SMK RPL yang fokus pada Web Development dan Backend Development.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0d1a",
+  "theme_color": "#7c5cf0",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/og-image.svg",
+      "sizes": "1200x630",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
