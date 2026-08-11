@@ -4,6 +4,7 @@ import { Loader2, Upload, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { api } from '@/services/api'
+import { isImgbbPageLink, resolveImageUrl } from '@/lib/imageUrl'
 import type { UploadResult } from '@/types'
 
 interface ImageUploadProps {
@@ -15,6 +16,7 @@ interface ImageUploadProps {
 export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
+  const [resolving, setResolving] = useState(false)
   const [error, setError] = useState('')
 
   const handleFile = async (file: File | undefined) => {
@@ -37,6 +39,23 @@ export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUplo
     }
   }
 
+  // Saat admin selesai mengisi URL (blur), link halaman ImgBB otomatis
+  // dikonversi ke direct image link agar bisa tampil di <img>.
+  const handleResolve = async () => {
+    const raw = value.trim()
+    if (!isImgbbPageLink(raw) || resolving) return
+    setResolving(true)
+    setError('')
+    try {
+      const resolved = await resolveImageUrl(raw)
+      if (resolved !== raw && resolved) onChange(resolved)
+    } catch {
+      // biarkan nilai asli jika gagal resolve
+    } finally {
+      setResolving(false)
+    }
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex items-end gap-3">
@@ -45,7 +64,8 @@ export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUplo
           <Input
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="/images/nama-foto.jpg"
+            onBlur={handleResolve}
+            placeholder="/images/nama-foto.jpg atau https://ibb.co.com/…"
           />
         </div>
         <Button
@@ -59,6 +79,9 @@ export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUplo
           {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
         </Button>
       </div>
+      {resolving && (
+        <p className="text-xs text-muted-foreground">Mengonversi link ImgBB…</p>
+      )}
       <input
         ref={inputRef}
         type="file"

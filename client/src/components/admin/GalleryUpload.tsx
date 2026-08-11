@@ -4,6 +4,7 @@ import { ImagePlus, Loader2, Plus, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { api } from '@/services/api'
+import { isImgbbPageLink, resolveImageUrl } from '@/lib/imageUrl'
 import type { UploadResult } from '@/types'
 
 interface GalleryUploadProps {
@@ -18,10 +19,29 @@ export function GalleryUpload({ value, onChange, label = 'Galeri Foto' }: Galler
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
 
-  const addUrl = (url: string) => {
+  const [resolving, setResolving] = useState(false)
+
+  const addUrl = async (url: string) => {
     const trimmed = url.trim()
     if (!trimmed) return
-    onChange([...value, trimmed])
+    if (isImgbbPageLink(trimmed)) {
+      setResolving(true)
+      setError('')
+      try {
+        const resolved = await resolveImageUrl(trimmed)
+        if (resolved !== trimmed && resolved) {
+          onChange([...value, resolved])
+        } else {
+          onChange([...value, trimmed])
+        }
+      } catch {
+        onChange([...value, trimmed])
+      } finally {
+        setResolving(false)
+      }
+    } else {
+      onChange([...value, trimmed])
+    }
     setDraftUrl('')
   }
 
@@ -114,6 +134,12 @@ export function GalleryUpload({ value, onChange, label = 'Galeri Foto' }: Galler
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
 
+      {resolving && (
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          Mengonversi link ImgBB…
+        </div>
+      )}
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   )

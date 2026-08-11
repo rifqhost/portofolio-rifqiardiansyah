@@ -29,6 +29,7 @@ import {
   type CollectionKey,
 } from './staticStore'
 import { slugify } from '@/utils/slug'
+import { resolveBodyImages } from '@/lib/imageUrl'
 
 export { ApiError }
 
@@ -201,6 +202,18 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
 
   // --- everything under /admin requires a token ---
   if (pathname.startsWith('/admin/')) requireAdmin()
+
+  // --- sanitize image URLs on admin saves ---
+  // Konversi otomatis link halaman ImgBB (ibb.co/…) menjadi direct image URL
+  // pada semua body form admin sebelum data disimpan.
+  if (
+    (method === 'PUT' || method === 'POST') &&
+    body &&
+    typeof body === 'object' &&
+    !(body instanceof FormData)
+  ) {
+    await resolveBodyImages(body)
+  }
 
   // --- upload (saved as base64 data URL in the edited data) ---
   if (pathname === '/admin/upload' && method === 'POST') {
