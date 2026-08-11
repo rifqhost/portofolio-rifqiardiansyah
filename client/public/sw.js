@@ -1,5 +1,5 @@
 // Service Worker - simple app-shell cache (dev-friendly)
-const CACHE_NAME = 'rifqi-portfolio-v1'
+const CACHE_NAME = 'rifqi-portfolio-v2'
 const SHELL = ['/', '/manifest.webmanifest']
 
 self.addEventListener('install', (event) => {

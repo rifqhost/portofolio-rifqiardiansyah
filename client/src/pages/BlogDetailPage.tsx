@@ -166,7 +166,7 @@ export function BlogDetailPage() {
           <Reveal delay={0.1}>
             <div className="flex items-center gap-4">
               <Avatar className="h-14 w-14">
-                <AvatarImage src="/images/avatar.svg" alt={post.author} />
+                <AvatarImage src="/images/avatar.jpg" alt={post.author} />
                 <AvatarFallback>{post.author.slice(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div>

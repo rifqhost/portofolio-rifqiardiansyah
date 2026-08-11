@@ -121,7 +121,7 @@ function Hero() {
               <div className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-card/60 p-3 shadow-card-hover backdrop-blur-xl">
                 <div className="relative overflow-hidden rounded-[1.5rem]">
                   <img
-                    src={profile?.avatar || '/images/avatar.svg'}
+                    src={profile?.avatar || '/images/avatar.jpg'}
                     alt={profile?.name || 'Rifqi Ardiansyah'}
                     className="aspect-square w-full object-cover"
                   />
@@ -466,7 +466,7 @@ export function HomePage() {
     jobTitle: 'Web Developer & Backend Developer',
     description: profile?.tagline || t('hero.description'),
     url: import.meta.env.VITE_SITE_URL || window.location.origin,
-    image: `${import.meta.env.VITE_SITE_URL || window.location.origin}${profile?.avatar || '/images/avatar.svg'}`,
+    image: `${import.meta.env.VITE_SITE_URL || window.location.origin}${profile?.avatar || '/images/avatar.jpg'}`,
     knowsAbout: ['Web Development', 'Backend Development', 'React', 'Node.js', 'REST API'],
   }
 

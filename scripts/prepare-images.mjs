@@ -86,24 +86,6 @@ function diagonal(hexA, hexB) {
   }
 }
 
-function avatar(hexBase, hexAccent) {
-  const base = hexToRgb(hexBase)
-  const accent = hexToRgb(hexAccent)
-  return (x, y, width, height) => {
-    const cx = width * 0.5
-    const cy = height * 0.42
-    const r = width * 0.22
-    const dx = x - cx
-    const dy = y - cy
-    const inCircle = dx * dx + dy * dy <= r * r
-    const bodyTop = cy + r * 0.9
-    const bodyH = height * 0.3
-    const inBody = y > bodyTop && y < bodyTop + bodyH && Math.abs(x - cx) < r * 1.1
-    if (inCircle || inBody) return accent
-    return base
-  }
-}
-
 function hexToRgb(hex) {
   const value = hex.replace('#', '')
   const n = parseInt(value, 16)
@@ -112,7 +94,6 @@ function hexToRgb(hex) {
 
 // filename -> { width, height, pixelFn, source }
 const PLACEHOLDERS = {
-  'avatar.png': { w: 512, h: 512, fn: avatar('#0f0d1a', '#7c5cf0') },
   'project-cbt.png': { w: 1200, h: 675, fn: diagonal('#1e1b4b', '#4f46e5') },
   'project-cbt-2.png': { w: 1200, h: 675, fn: diagonal('#312e81', '#6366f1') },
   'project-cbt-3.png': { w: 1200, h: 675, fn: diagonal('#1e1b4b', '#7c3aed') },

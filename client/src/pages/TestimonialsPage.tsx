@@ -67,7 +67,9 @@ export function TestimonialsPage() {
                     </div>
                     <div className="mt-6 flex items-center gap-3 border-t border-border/50 p-6">
                       <Avatar className="h-11 w-11">
-                        <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+                        {testimonial.avatar && (
+                          <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+                        )}
                         <AvatarFallback>{testimonial.name.slice(0, 2).toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <div>
