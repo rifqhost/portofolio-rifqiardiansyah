@@ -48,9 +48,15 @@ export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUplo
     setError('')
     try {
       const resolved = await resolveImageUrl(raw)
-      if (resolved !== raw && resolved) onChange(resolved)
+      if (resolved !== raw && resolved) {
+        onChange(resolved)
+      } else if (isImgbbPageLink(raw)) {
+        setError(
+          'Gagal mengonversi link ImgBB ke direct link. Coba buka link-nya, klik kanan gambar, salin alamat gambar, lalu tempel URL i.ibb.co.com langsung.',
+        )
+      }
     } catch {
-      // biarkan nilai asli jika gagal resolve
+      setError('Terjadi kesalahan saat mengonversi link ImgBB. Gunakan URL i.ibb.co.com langsung.')
     } finally {
       setResolving(false)
     }

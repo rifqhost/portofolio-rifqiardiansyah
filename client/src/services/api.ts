@@ -88,6 +88,21 @@ function normalizeProject(data: Partial<Project>, existing: Project | null): Pro
   }
 }
 
+// Resolve ulang link halaman ImgBB pada data yang akan dikirim ke halaman publik.
+// Menutup celah: jika data tersimpan dengan link mentah (mis. karena proxy timeout
+// saat submit, atau data lama di localStorage/file JSON), gambar tetap tampil karena
+// dikonversi ke direct link sebelum dirender. Cache per-URL di imageUrl.ts membuat
+// operasi ini murah setelah resolve pertama.
+async function resolveRenderImages(items: unknown[]): Promise<void> {
+  await Promise.all(
+    items.map(async (item) => {
+      if (item && typeof item === 'object') {
+        await resolveBodyImages(item as Record<string, unknown>)
+      }
+    }),
+  )
+}
+
 function normalizePost(data: Partial<BlogPost>, existing: BlogPost | null): BlogPost {
   const base: Partial<BlogPost> = existing || {}
   const title = String(data.title || base.title || 'Untitled Post')
@@ -321,6 +336,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
   // --- projects ---
   if (pathname === '/projects' && method === 'GET') {
     const { data, meta } = await getProjectsData(query)
+    await resolveRenderImages(data as unknown[])
     return ok(data, meta)
   }
   if (pathname.startsWith('/projects/') && method === 'GET') {
@@ -328,6 +344,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
     const projects = (await readCollection<Project[]>('projects')) || []
     const project = projects.find((p) => p.slug === slug)
     if (!project) throw new ApiError('Project not found', 404)
+    await resolveBodyImages(project as unknown as Record<string, unknown>)
     return ok(project)
   }
   if (pathname === '/admin/projects' && method === 'POST') {
@@ -358,6 +375,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
   // --- blog ---
   if (pathname === '/blog' && method === 'GET') {
     const { data, meta } = await getPostsData(query)
+    await resolveRenderImages(data as unknown[])
     return ok(data, meta)
   }
   if (pathname.startsWith('/blog/') && method === 'GET') {
@@ -365,6 +383,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
     const posts = (await readCollection<BlogPost[]>('blog')) || []
     const post = posts.find((p) => p.slug === slug)
     if (!post) throw new ApiError('Post not found', 404)
+    await resolveBodyImages(post as unknown as Record<string, unknown>)
     return ok(post)
   }
   if (pathname === '/admin/blog' && method === 'POST') {

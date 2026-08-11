@@ -4,7 +4,9 @@
 // halaman web, bukan file gambar. <img> tidak bisa menampilkan halaman web,
 // jadi link tsb dikonversi otomatis ke direct link (https://i.ibb.co.com/…).
 
-const IMGBB_PAGE_PATTERN = /^https?:\/\/(?:www\.)?ibb\.co(?:\.com)?\/[A-Za-z0-9_-]+(?:\?.*)?$/
+// Pattern juga menangkap domain imgbb.com dan subdomain i.ibb.co.com yang
+// kadang muncul di share links.
+const IMGBB_PAGE_PATTERN = /^https?:\/\/(?:(?:www\.)?(?:ibb|imgbb)\.co?(?:\.com)?|i\.ibb\.co\.com)\/[A-Za-z0-9_-]+(?:\?.*)?$/
 
 const PROXIES = [
   (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
@@ -12,6 +14,8 @@ const PROXIES = [
   (url: string) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
   (url: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
   (url: string) => `https://api.cors.lol/?url=${encodeURIComponent(url)}`,
+  (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url.replace('ibb.co.com', 'ibb.co'))}`,
+  (url: string) => `https://corsproxy.io/?url=${encodeURIComponent(url.replace('ibb.co.com', 'ibb.co'))}`,
 ]
 
 // Cache hasil resolve per URL agar tidak fetch berulang saat submit.
