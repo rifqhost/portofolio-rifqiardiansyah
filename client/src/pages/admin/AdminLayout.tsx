@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
+  Award,
   ExternalLink,
   FolderKanban,
   LayoutDashboard,
@@ -23,6 +24,7 @@ import { cn } from '@/lib/utils'
 const NAV_ITEMS = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/admin/projects', label: 'Proyek', icon: FolderKanban },
+  { to: '/admin/certificates', label: 'Sertifikat', icon: Award },
   { to: '/admin/blog', label: 'Blog', icon: Newspaper },
   { to: '/admin/profile', label: 'Profil', icon: UserRound },
   { to: '/admin/settings', label: 'Pengaturan', icon: Settings },

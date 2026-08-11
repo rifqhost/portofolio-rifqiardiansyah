@@ -62,9 +62,20 @@ export function CertificatesPage() {
               {data?.items.map((certificate, index) => (
                 <Reveal key={certificate.id} delay={index * 0.07}>
                   <Card className="group relative h-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-primary/40">
-                    <div className="flex items-center justify-center bg-gradient-to-br from-primary/15 to-accent/10 px-6 py-10">
-                      <Award className="h-14 w-14 text-primary transition-transform duration-300 group-hover:scale-110" />
-                    </div>
+                    {certificate.image ? (
+                      <div className="flex aspect-[16/10] items-center justify-center overflow-hidden bg-secondary/50">
+                        <img
+                          src={certificate.image}
+                          alt={certificate.title}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center bg-gradient-to-br from-primary/15 to-accent/10 px-6 py-10">
+                        <Award className="h-14 w-14 text-primary transition-transform duration-300 group-hover:scale-110" />
+                      </div>
+                    )}
                     <CardContent className="p-6">
                       <h3 className="font-display text-base font-semibold leading-snug">
                         {certificate.title}

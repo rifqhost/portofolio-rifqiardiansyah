@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/select'
 import { ConfirmDialog } from '@/components/admin/ConfirmDialog'
 import { ImageUpload } from '@/components/admin/ImageUpload'
+import { GalleryUpload } from '@/components/admin/GalleryUpload'
 import { useToast } from '@/contexts/ToastContext'
 import { useFetch } from '@/hooks/useFetch'
 import { api } from '@/services/api'
@@ -34,6 +35,7 @@ interface ProjectForm {
   description: string
   category: string
   image: string
+  gallery: string[]
   github: string
   demo: string
   status: string
@@ -47,6 +49,7 @@ const EMPTY_FORM: ProjectForm = {
   description: '',
   category: 'Web',
   image: '',
+  gallery: [],
   github: '',
   demo: '',
   status: 'in-progress',
@@ -60,6 +63,7 @@ const toForm = (p: Project): ProjectForm => ({
   description: p.description,
   category: p.category,
   image: p.image,
+  gallery: p.gallery ?? [],
   github: p.github,
   demo: p.demo,
   status: p.status,
@@ -73,6 +77,7 @@ const fromForm = (form: ProjectForm) => ({
   description: form.description.trim(),
   category: form.category.trim(),
   image: form.image.trim(),
+  gallery: form.gallery.filter((url) => url.trim()),
   github: form.github.trim(),
   demo: form.demo.trim(),
   status: form.status as ProjectStatus,
@@ -309,7 +314,12 @@ export function AdminProjectsPage() {
                 placeholder={'Autentikasi JWT\nCRUD data'}
               />
             </div>
-            <ImageUpload value={form.image} onChange={setField('image')} />
+            <ImageUpload value={form.image} onChange={setField('image')} label="Foto Utama" />
+            <GalleryUpload
+              value={form.gallery}
+              onChange={(urls) => setForm((prev) => ({ ...prev, gallery: urls }))}
+              label="Galeri Foto (opsional)"
+            />
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                 Batal

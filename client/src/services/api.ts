@@ -270,6 +270,22 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
     return ok(updated)
   }
 
+  // --- certificates ---
+  if (pathname === '/admin/certificates' && method === 'GET') {
+    return ok(await readCollection<Certificates>('certificates'))
+  }
+  if (pathname === '/admin/certificates' && method === 'PUT') {
+    const current = (await readCollection<Certificates>('certificates')) || ({} as Certificates)
+    const incoming = (body as Partial<Certificates>) || {}
+    const updated: Certificates = {
+      ...current,
+      ...incoming,
+      items: Array.isArray(incoming.items) ? incoming.items : current.items || [],
+    }
+    writeCollection('certificates', updated)
+    return ok(updated)
+  }
+
   // --- profile ---
   if (pathname === '/profile' && method === 'GET') {
     return ok(await readCollection<Profile>('profile'))

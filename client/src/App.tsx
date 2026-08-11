@@ -24,6 +24,7 @@ import { AdminLoginPage } from '@/pages/admin/AdminLoginPage'
 import { AdminLayout } from '@/pages/admin/AdminLayout'
 import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage'
 import { AdminProjectsPage } from '@/pages/admin/AdminProjectsPage'
+import { AdminCertificatesPage } from '@/pages/admin/AdminCertificatesPage'
 import { AdminBlogPage } from '@/pages/admin/AdminBlogPage'
 import { AdminProfilePage } from '@/pages/admin/AdminProfilePage'
 import { AdminSettingsPage } from '@/pages/admin/AdminSettingsPage'
@@ -56,6 +57,7 @@ export default function App() {
                 <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="dashboard" element={<AdminDashboardPage />} />
                 <Route path="projects" element={<AdminProjectsPage />} />
+                <Route path="certificates" element={<AdminCertificatesPage />} />
                 <Route path="blog" element={<AdminBlogPage />} />
                 <Route path="profile" element={<AdminProfilePage />} />
                 <Route path="settings" element={<AdminSettingsPage />} />
