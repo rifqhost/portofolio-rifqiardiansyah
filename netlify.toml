@@ -1,0 +1,17 @@
+# Netlify configuration
+[build]
+  command = "npm run build"
+  publish = "client/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  VITE_STATIC_MODE = "true"
+
+# --- Recommended: set your real site URL (used by sitemap.xml & robots.txt) ---
+# [build.environment]
+#   VITE_SITE_URL = "https://nama-situs.netlify.app"
+#
+# --- Optional: admin credentials for the static admin mode (default: admin / admin123) ---
+# [build.environment]
+#   VITE_ADMIN_USERNAME = "admin"
+#   VITE_ADMIN_PASSWORD = "ganti-password"

@@ -1,0 +1,15 @@
+{
+  "siteName": "Rifqi Ardiansyah",
+  "defaultLang": "id",
+  "features": {
+    "visitorCounter": true,
+    "analytics": true,
+    "emailjs": false
+  },
+  "emailjs": {
+    "serviceId": "",
+    "templateId": "",
+    "publicKey": ""
+  },
+  "visitors": 14
+}

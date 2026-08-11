@@ -1,0 +1,35 @@
+[
+  {
+    "id": "exp-freelance",
+    "role": "Web Developer (Freelance)",
+    "company": "Proyek Pribadi & Klien",
+    "type": "Freelance",
+    "period": "2024 - Sekarang",
+    "location": "Remote",
+    "current": true,
+    "description": "Mengembangkan website dan aplikasi web untuk tugas sekolah serta beberapa klien kecil. Bertanggung jawab penuh mulai dari perencanaan, desain antarmuka, hingga pengembangan backend dan deployment.",
+    "skills": ["React", "Node.js", "Express", "Tailwind CSS", "JSON Storage"]
+  },
+  {
+    "id": "exp-cbt",
+    "role": "Lead Developer",
+    "company": "Proyek CBT Sekolah",
+    "type": "School Project",
+    "period": "2025",
+    "location": "Sekolah",
+    "current": false,
+    "description": "Memimpin pengembangan aplikasi Computer Based Test untuk ujian sekolah. Merancang arsitektur REST API, bank soal, penilaian otomatis, serta laporan hasil siswa.",
+    "skills": ["React", "TypeScript", "Express", "REST API"]
+  },
+  {
+    "id": "exp-pkl",
+    "role": "Praktik Kerja Lapangan",
+    "company": "Perusahaan Teknologi Lokal",
+    "type": "Internship",
+    "period": "2025",
+    "location": "Kantor",
+    "current": false,
+    "description": "Mengikuti praktik kerja lapangan (PKL) di perusahaan teknologi, membantu tim pengembangan dalam membangun fitur website dan memperbaiki bug aplikasi.",
+    "skills": ["JavaScript", "Git", "GitHub", "REST API"]
+  }
+]

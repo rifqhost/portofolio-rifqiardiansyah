@@ -45,7 +45,7 @@ export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUplo
           <Input
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="/uploads/gambar.svg"
+            placeholder="/images/nama-foto.jpg"
           />
         </div>
         <Button
@@ -62,7 +62,7 @@ export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUplo
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
         className="hidden"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />

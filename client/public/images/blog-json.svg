@@ -1,17 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#241d3d"/>
-      <stop offset="1" stop-color="#6f4cf0"/>
+      <stop offset="0%" stop-color="#3f3f46"/>
+      <stop offset="100%" stop-color="#a1a1aa"/>
     </linearGradient>
   </defs>
-  <rect width="1280" height="720" fill="url(#bg)"/>
-  <g opacity="0.2">
-    <rect x="220" y="220" width="180" height="260" rx="16" fill="#cfc0ff"/>
-    <rect x="430" y="300" width="180" height="180" rx="16" fill="#9a7bff"/>
-    <rect x="640" y="220" width="180" height="260" rx="16" fill="#cfc0ff"/>
-    <rect x="850" y="300" width="180" height="180" rx="16" fill="#9a7bff"/>
-  </g>
-  <text x="640" y="640" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="700" fill="#ffffff" text-anchor="middle">Aplikasi JSON Storage</text>
-  <text x="640" y="700" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#d9ccff" text-anchor="middle">Membangun tanpa database</text>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="980" cy="140" r="220" fill="rgba(255,255,255,0.08)"/>
+    <circle cx="1080" cy="480" r="150" fill="rgba(255,255,255,0.06)"/>
+    <circle cx="180" cy="620" r="90" fill="rgba(255,255,255,0.05)"/>
+  <text x="80" y="120" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" letter-spacing="4" fill="rgba(255,255,255,0.9)">BACKEND</text>
+  <rect x="80" y="152" width="64" height="6" rx="3" fill="rgba(255,255,255,0.5)"/>
+  <text x="80" y="320" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="84" fill="#ffffff">JSON Storage</text>
+  <text x="80" y="420" font-family="Arial, Helvetica, sans-serif" font-size="32" fill="rgba(255,255,255,0.8)">untuk Aplikasi</text>
 </svg>

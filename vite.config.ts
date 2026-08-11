@@ -8,6 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   root: 'client',
+  envDir: __dirname,
   plugins: [react()],
   resolve: {
     alias: {
@@ -34,9 +35,5 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: false,
-    proxy: {
-      '/api': 'http://localhost:5000',
-      '/uploads': 'http://localhost:5000',
-    },
   },
 })

@@ -1,0 +1,26 @@
+{
+  "frontend": [
+    { "name": "HTML", "level": 90, "icon": "Code2" },
+    { "name": "CSS", "level": 85, "icon": "Palette" },
+    { "name": "JavaScript", "level": 80, "icon": "FileCode" },
+    { "name": "TypeScript", "level": 70, "icon": "FileType" },
+    { "name": "React", "level": 75, "icon": "Atom" },
+    { "name": "Tailwind CSS", "level": 85, "icon": "Wind" },
+    { "name": "Bootstrap", "level": 80, "icon": "LayoutGrid" }
+  ],
+  "backend": [
+    { "name": "Node.js", "level": 75, "icon": "Server" },
+    { "name": "Express.js", "level": 75, "icon": "Route" },
+    { "name": "PHP", "level": 65, "icon": "FileCode" },
+    { "name": "REST API", "level": 80, "icon": "Plug" },
+    { "name": "MySQL", "level": 65, "icon": "Database" },
+    { "name": "SQLite", "level": 60, "icon": "Database" }
+  ],
+  "tools": [
+    { "name": "Git", "level": 80, "icon": "GitBranch" },
+    { "name": "GitHub", "level": 80, "icon": "Github" },
+    { "name": "Linux", "level": 65, "icon": "Terminal" },
+    { "name": "VS Code", "level": 85, "icon": "Laptop" },
+    { "name": "Postman", "level": 70, "icon": "Send" }
+  ]
+}
