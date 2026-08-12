@@ -8,24 +8,30 @@ export interface EmailPayload {
   message: string
 }
 
+export interface EmailJsConfig {
+  serviceId: string
+  templateId: string
+  publicKey: string
+}
+
 export const EMAILJS_CONFIGURED = Boolean(
   import.meta.env.VITE_EMAILJS_SERVICE_ID &&
     import.meta.env.VITE_EMAILJS_TEMPLATE_ID &&
     import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
 )
 
-export async function sendEmail(payload: EmailPayload): Promise<void> {
-  const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
-  const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
-  const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+function isConfigured(cfg: EmailJsConfig): boolean {
+  return Boolean(cfg.serviceId && cfg.templateId && cfg.publicKey)
+}
 
-  if (!serviceId || !templateId || !publicKey) {
+export async function sendEmail(payload: EmailPayload, cfg: EmailJsConfig): Promise<void> {
+  if (!isConfigured(cfg)) {
     throw new Error('EMAILJS_NOT_CONFIGURED')
   }
 
-  emailjs.init({ publicKey })
+  emailjs.init({ publicKey: cfg.publicKey })
 
-  await emailjs.send(serviceId, templateId, {
+  await emailjs.send(cfg.serviceId, cfg.templateId, {
     from_name: payload.name,
     from_email: payload.email,
     subject: payload.subject,

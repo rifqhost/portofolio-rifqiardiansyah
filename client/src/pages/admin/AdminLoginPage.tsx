@@ -95,11 +95,6 @@ export function AdminLoginPage() {
                 {loading ? 'Memproses…' : 'Masuk'}
               </Button>
             </form>
-
-            <p className="mt-6 rounded-xl bg-secondary/50 px-4 py-3 text-center text-xs text-muted-foreground">
-              Default: username <code className="font-mono text-primary">admin</code> · password{' '}
-              <code className="font-mono text-primary">admin123</code>
-            </p>
           </CardContent>
         </Card>
       </div>

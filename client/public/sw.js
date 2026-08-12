@@ -1,7 +1,7 @@
 // Service Worker - offline app-shell with network-first navigations.
 // Never serves the SPA HTML for asset requests (scripts/css/images), so a
 // stale cache or a missing file can't break module loading with a text/html MIME.
-const CACHE_NAME = 'rifqi-portfolio-v3'
+const CACHE_NAME = 'rifqi-portfolio-v4'
 const SHELL = ['/', '/manifest.webmanifest']
 
 self.addEventListener('install', (event) => {
@@ -46,22 +46,28 @@ self.addEventListener('fetch', (event) => {
         return shell || Response.error()
       }
 
-      // Same-origin assets: cache-first. Never fall back to the SPA HTML
-      // (that would break module scripts/images with a text/html MIME type).
+      // Same-origin assets: stale-while-revalidate. Serve the cached copy
+      // immediately (fast, works offline) and refresh the cache in the
+      // background, so new content is picked up on the next visit.
+      // Never fall back to the SPA HTML (that would break module scripts/
+      // images with a text/html MIME type).
       const cached = await cache.match(request)
-      if (cached) return cached
-      try {
-        const response = await fetch(request)
-        if (response.ok) {
-          const type = response.headers.get('content-type') || ''
-          if (!type.includes('text/html')) {
-            cache.put(request, response.clone()).catch(() => {})
+      const network = fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const type = response.headers.get('content-type') || ''
+            if (!type.includes('text/html')) {
+              cache.put(request, response.clone()).catch(() => {})
+            }
           }
-        }
-        return response
-      } catch {
-        return Response.error()
+          return response
+        })
+        .catch(() => null)
+      if (cached) {
+        event.waitUntil(Promise.resolve(network).then(() => undefined))
+        return cached
       }
+      return (await network) || cached || Response.error()
     })(),
   )
 })

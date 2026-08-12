@@ -114,17 +114,22 @@ async function sha256(text: string): Promise<string> {
 }
 
 function getAdminUsername(): string {
-  return import.meta.env.VITE_ADMIN_USERNAME || 'admin'
+  return import.meta.env.VITE_ADMIN_USERNAME || ''
 }
 
-async function getExpectedPasswordHash(): Promise<string> {
+async function getExpectedPasswordHash(): Promise<string | null> {
   const stored = readLocal(ADMIN_HASH_KEY)
   if (stored) return stored
-  return sha256(import.meta.env.VITE_ADMIN_PASSWORD || 'admin123')
+  const envPassword = import.meta.env.VITE_ADMIN_PASSWORD
+  return envPassword ? sha256(envPassword) : null
 }
 
 export async function verifyLogin(username: string, password: string): Promise<boolean> {
-  return username === getAdminUsername() && (await sha256(password)) === (await getExpectedPasswordHash())
+  const adminUsername = getAdminUsername()
+  if (!adminUsername) return false
+  const expectedHash = await getExpectedPasswordHash()
+  if (!expectedHash) return false
+  return username === adminUsername && (await sha256(password)) === expectedHash
 }
 
 export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {

@@ -70,9 +70,18 @@ export function ContactPage() {
     const emailEnabled = config?.features.emailjs ?? EMAILJS_CONFIGURED
 
     if (emailEnabled) {
+      const emailjsConfig = {
+        serviceId: config?.emailjs?.serviceId || import.meta.env.VITE_EMAILJS_SERVICE_ID || '',
+        templateId: config?.emailjs?.templateId || import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '',
+        publicKey: config?.emailjs?.publicKey || import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '',
+      }
+      if (!emailjsConfig.serviceId || !emailjsConfig.templateId || !emailjsConfig.publicKey) {
+        toast(t('contact.emailjsNotConfigured'), 'info')
+        return
+      }
       setSending(true)
       try {
-        await sendEmail(form)
+        await sendEmail(form, emailjsConfig)
         setForm({ name: '', email: '', subject: '', message: '' })
         toast(t('contact.success'), 'success')
       } catch {

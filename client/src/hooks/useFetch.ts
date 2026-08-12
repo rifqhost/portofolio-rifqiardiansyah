@@ -32,12 +32,15 @@ export function useFetch<T>(path: string, options: UseFetchOptions<T> = {}) {
 
   useEffect(() => {
     mounted.current = true
+    setData(initialData)
+    setError(null)
+    setLoading(enabled)
     fetchData()
     return () => {
       mounted.current = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps)
+  }, [path, enabled, ...deps])
 
   return { data, loading, error, refetch: fetchData }
 }

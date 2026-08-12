@@ -7,5 +7,3 @@
   NODE_VERSION = "20"
   VITE_STATIC_MODE = "true"
   VITE_SITE_URL = "https://portofolio-rifqiardiansyah.netlify.app/"
-  VITE_ADMIN_USERNAME = "ikyy"
-  VITE_ADMIN_PASSWORD = "ikyy0909"
