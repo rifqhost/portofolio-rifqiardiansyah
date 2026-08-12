@@ -110,7 +110,7 @@ export function ImageUpload({ value, onChange, label = 'Foto Utama' }: ImageUplo
     }
   }
 
-  const displaySrc = value || preview
+  const displaySrc = preview || value
 
   return (
     <div className="space-y-3">
