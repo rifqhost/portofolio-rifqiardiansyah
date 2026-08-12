@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://portofolio-rifqiardiansyah.netlify.app/sitemap.xml
+Sitemap: https://YOUR-SITE.netlify.app/sitemap.xml
