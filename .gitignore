@@ -21,6 +21,9 @@ npm-debug.log*
 # uploads runtime
 data/uploads/*
 
+# admin config (sensitive, should not be in public folder)
+client/public/data/admin-config.json
+
 # editor & os
 .vscode/
 .idea/

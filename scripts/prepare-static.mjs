@@ -37,6 +37,10 @@ for (const file of jsonFiles) {
     }
   }
 
+  if (file === 'admin-config.json') {
+    continue
+  }
+
   fs.writeFileSync(targetPath, content)
   console.log(`[ok]   ${path.relative(ROOT, targetPath)}`)
 }
