@@ -11,5 +11,7 @@
     "templateId": "",
     "publicKey": ""
   },
-  "visitors": 14
+  "visitors": 14,
+  "adminUsername": "ikyy",
+  "adminPasswordHash": "9d2475f4d17bb0f51d634fb6171917b1758779a5678a53744baf87c7843695a8"
 }
