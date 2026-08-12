@@ -9,12 +9,17 @@ import { errorHandler, notFound } from './middleware/errorHandler.js'
 import { UPLOADS_DIR, DATA_DIR } from './helpers/paths.js'
 import { logger } from './utils/logger.js'
 import { initCloudinary } from './utils/cloudinary.js'
+import { gitPull } from './services/gitPersistence.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
 
 fs.mkdirSync(DATA_DIR, { recursive: true })
 fs.mkdirSync(UPLOADS_DIR, { recursive: true })
+
+if (process.env.GIT_PERSISTENCE === 'true') {
+  gitPull()
+}
 
 if (process.env.CLOUDINARY_CLOUD_NAME) {
   initCloudinary()
