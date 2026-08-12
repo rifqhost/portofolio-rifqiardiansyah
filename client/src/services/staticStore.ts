@@ -25,7 +25,7 @@ const OVERRIDES_KEY = 'portfolio_data_v1'
 const ADMIN_HASH_KEY = 'portfolio_admin_hash'
 const VISITORS_KEY = 'portfolio_visitors'
 export const MAX_UPLOAD_BYTES = 1.5 * 1024 * 1024
-export const MAX_RAW_UPLOAD_BYTES = 10 * 1024 * 1024
+export const MAX_RAW_UPLOAD_BYTES = 5 * 1024 * 1024
 
 type Overrides = Partial<Record<CollectionKey, unknown>>
 
@@ -151,9 +151,10 @@ function readFileAsDataUrl(file: File): Promise<string> {
 
 // Kompres gambar (resize ke maks 1600px + re-encode) sebelum disimpan sebagai
 // data URL di localStorage. GIF animasi dipertahankan apa adanya.
-async function compressImage(file: File, maxDimension = 1600, quality = 0.82): Promise<string> {
+async function compressImage(file: File, maxDimension = 1200, quality = 0.75): Promise<string> {
+  if (file.type === 'image/gif') return readFileAsDataUrl(file)
+
   const original = await readFileAsDataUrl(file)
-  if (file.type === 'image/gif') return original
 
   const image = await new Promise<HTMLImageElement>((resolve, reject) => {
     const img = new Image()

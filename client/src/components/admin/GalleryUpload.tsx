@@ -1,5 +1,5 @@
 // FILE: client/src/components/admin/GalleryUpload.tsx
-import { useRef, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { ImagePlus, Loader2, Plus, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -13,13 +13,32 @@ interface GalleryUploadProps {
   label?: string
 }
 
+interface PreviewItem {
+  id: string
+  src: string
+  file?: File
+}
+
 export function GalleryUpload({ value, onChange, label = 'Galeri Foto' }: GalleryUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [draftUrl, setDraftUrl] = useState('')
+  const previewsRef = useRef<PreviewItem[]>([])
+  const [previews, setPreviews] = useState<PreviewItem[]>([])
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
-
+  const [draftUrl, setDraftUrl] = useState('')
   const [resolving, setResolving] = useState(false)
+
+  useEffect(() => {
+    return () => {
+      previewsRef.current.forEach((p) => URL.revokeObjectURL(p.src))
+    }
+  }, [])
+
+  const refreshPreviews = (updater: PreviewItem[] | ((prev: PreviewItem[]) => PreviewItem[])) => {
+    const next = typeof updater === 'function' ? updater(previewsRef.current) : updater
+    setPreviews(next)
+    previewsRef.current = next
+  }
 
   const addUrl = async (url: string) => {
     const trimmed = url.trim()
@@ -29,11 +48,7 @@ export function GalleryUpload({ value, onChange, label = 'Galeri Foto' }: Galler
       setError('')
       try {
         const resolved = await resolveImageUrl(trimmed)
-        if (resolved !== trimmed && resolved) {
-          onChange([...value, resolved])
-        } else {
-          onChange([...value, trimmed])
-        }
+        onChange([...value, resolved !== trimmed && resolved ? resolved : trimmed])
       } catch {
         onChange([...value, trimmed])
       } finally {
@@ -45,23 +60,43 @@ export function GalleryUpload({ value, onChange, label = 'Galeri Foto' }: Galler
     setDraftUrl('')
   }
 
-  const handleFile = async (file: File | undefined) => {
+  const uploadFile = async (file: File): Promise<string> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const result = await api.upload<UploadResult>('/admin/upload', formData)
+    if (result.data?.url) {
+      return result.data.url
+    }
+    throw new Error('Gagal mengunggah file')
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
     if (!file) return
+
+    const objectUrl = URL.createObjectURL(file)
+    const previewItem: PreviewItem = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      src: objectUrl,
+      file,
+    }
+
+    const nextPreviews = [...previewsRef.current, previewItem]
+    refreshPreviews(nextPreviews)
+
     setUploading(true)
     setError('')
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      const result = await api.upload<UploadResult>('/admin/upload', formData)
-      if (result.data?.url) {
-        onChange([...value, result.data.url])
-      } else {
-        setError('Gagal mengunggah file')
-      }
+      const url = await uploadFile(file)
+      onChange([...value, url])
+      refreshPreviews((prev) => prev.filter((p) => p.id !== previewItem.id))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal mengunggah file')
+      refreshPreviews((prev) => prev.filter((p) => p.id !== previewItem.id))
+      URL.revokeObjectURL(objectUrl)
     } finally {
       setUploading(false)
+      if (inputRef.current) inputRef.current.value = ''
     }
   }
 
@@ -69,17 +104,30 @@ export function GalleryUpload({ value, onChange, label = 'Galeri Foto' }: Galler
     onChange(value.filter((url) => url !== target))
   }
 
+  const removePreview = (id: string) => {
+    const item = previewsRef.current.find((p) => p.id === id)
+    if (item) {
+      URL.revokeObjectURL(item.src)
+    }
+    refreshPreviews((prev) => prev.filter((p) => p.id !== id))
+  }
+
+  const displayItems = [
+    ...value.map((url, index) => ({ id: `saved-${index}`, src: url, saved: true })),
+    ...previews.map((p) => ({ id: p.id, src: p.src, saved: false })),
+  ]
+
   return (
     <div className="space-y-3">
       <p className="text-sm font-medium text-muted-foreground">{label}</p>
 
-      {value.length > 0 && (
+      {displayItems.length > 0 && (
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-          {value.map((url, index) => (
-            <div key={`${url}-${index}`} className="group relative">
+          {displayItems.map((item) => (
+            <div key={item.id} className="group relative">
               <img
-                src={url}
-                alt={`Galeri ${index + 1}`}
+                src={item.src}
+                alt={item.saved ? `Galeri ${item.id.split('-')[1]}` : 'Mengunggah...'}
                 className="w-full rounded-lg border border-border"
               />
               <Button
@@ -87,8 +135,8 @@ export function GalleryUpload({ value, onChange, label = 'Galeri Foto' }: Galler
                 variant="ghost"
                 size="icon"
                 className="absolute -right-1.5 -top-1.5 h-6 w-6 rounded-full bg-background text-destructive shadow-sm hover:bg-destructive hover:text-destructive-foreground"
-                onClick={() => removeUrl(url)}
-                aria-label={`Hapus gambar ${index + 1}`}
+                onClick={() => (item.saved ? removeUrl(item.src) : removePreview(item.id))}
+                aria-label="Hapus gambar"
               >
                 <X className="h-3.5 w-3.5" />
               </Button>
@@ -131,7 +179,7 @@ export function GalleryUpload({ value, onChange, label = 'Galeri Foto' }: Galler
         type="file"
         accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
         className="hidden"
-        onChange={(e) => handleFile(e.target.files?.[0])}
+        onChange={handleFileChange}
       />
 
       {resolving && (

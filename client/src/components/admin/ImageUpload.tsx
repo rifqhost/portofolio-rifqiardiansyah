@@ -1,5 +1,5 @@
 // FILE: client/src/components/admin/ImageUpload.tsx
-import { useRef, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { ImagePlus, Loader2, Plus, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -15,10 +15,28 @@ interface ImageUploadProps {
 
 export function ImageUpload({ value, onChange, label = 'Foto Utama' }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [draftUrl, setDraftUrl] = useState('')
+  const previewRef = useRef<string>('')
+  const [preview, setPreview] = useState('')
   const [uploading, setUploading] = useState(false)
   const [resolving, setResolving] = useState(false)
   const [error, setError] = useState('')
+  const [draftUrl, setDraftUrl] = useState('')
+
+  useEffect(() => {
+    return () => {
+      if (previewRef.current) {
+        URL.revokeObjectURL(previewRef.current)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (value && previewRef.current) {
+      URL.revokeObjectURL(previewRef.current)
+      previewRef.current = ''
+      setPreview('')
+    }
+  }, [value])
 
   const addUrl = async (url: string) => {
     const trimmed = url.trim()
@@ -44,34 +62,64 @@ export function ImageUpload({ value, onChange, label = 'Foto Utama' }: ImageUplo
     setDraftUrl('')
   }
 
-  const handleFile = async (file: File | undefined) => {
+  const uploadFile = async (file: File): Promise<string> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const result = await api.upload<UploadResult>('/admin/upload', formData)
+    if (result.data?.url) {
+      return result.data.url
+    }
+    throw new Error('Gagal mengunggah file')
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
     if (!file) return
+
+    if (previewRef.current) {
+      URL.revokeObjectURL(previewRef.current)
+    }
+
+    const objectUrl = URL.createObjectURL(file)
+    previewRef.current = objectUrl
+    setPreview(objectUrl)
+
     setUploading(true)
     setError('')
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      const result = await api.upload<UploadResult>('/admin/upload', formData)
-      if (result.data?.url) {
-        onChange(result.data.url)
-      } else {
-        setError('Gagal mengunggah file')
-      }
+      const url = await uploadFile(file)
+      onChange(url)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal mengunggah file')
+      if (previewRef.current) {
+        URL.revokeObjectURL(previewRef.current)
+        previewRef.current = ''
+        setPreview('')
+      }
     } finally {
       setUploading(false)
     }
   }
 
+  const handleRemove = () => {
+    onChange('')
+    if (previewRef.current) {
+      URL.revokeObjectURL(previewRef.current)
+      previewRef.current = ''
+      setPreview('')
+    }
+  }
+
+  const displaySrc = value || preview
+
   return (
     <div className="space-y-3">
       <p className="text-sm font-medium text-muted-foreground">{label}</p>
 
-      {value && (
+      {displaySrc && (
         <div className="group relative">
           <img
-            src={value}
+            src={displaySrc}
             alt="Foto utama"
             className="w-full rounded-lg border border-border"
           />
@@ -80,7 +128,7 @@ export function ImageUpload({ value, onChange, label = 'Foto Utama' }: ImageUplo
             variant="ghost"
             size="icon"
             className="absolute -right-1.5 -top-1.5 h-6 w-6 rounded-full bg-background text-destructive shadow-sm hover:bg-destructive hover:text-destructive-foreground"
-            onClick={() => onChange('')}
+            onClick={handleRemove}
             aria-label="Hapus foto utama"
           >
             <X className="h-3.5 w-3.5" />
@@ -88,7 +136,7 @@ export function ImageUpload({ value, onChange, label = 'Foto Utama' }: ImageUplo
         </div>
       )}
 
-      {!value && (
+      {!displaySrc && (
         <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-border text-sm text-muted-foreground">
           Belum ada foto
         </div>
@@ -128,7 +176,7 @@ export function ImageUpload({ value, onChange, label = 'Foto Utama' }: ImageUplo
         type="file"
         accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
         className="hidden"
-        onChange={(e) => handleFile(e.target.files?.[0])}
+        onChange={handleFileChange}
       />
 
       {resolving && (
