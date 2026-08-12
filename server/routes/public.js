@@ -6,7 +6,6 @@ import { getPublicProfile } from '../controllers/profileController.js'
 import { getCollection } from '../controllers/contentController.js'
 import { getCertificates } from '../controllers/certificatesController.js'
 import { getPublicConfig, incrementVisitors } from '../controllers/configController.js'
-import { getStats } from '../controllers/dashboardController.js'
 
 const router = Router()
 
@@ -21,7 +20,6 @@ router.get('/skills', getCollection('skills'))
 router.get('/experience', getCollection('experience'))
 router.get('/testimonials', getCollection('testimonials'))
 router.get('/config', getPublicConfig)
-router.get('/dashboard/stats', getStats)
 router.post('/visitors', incrementVisitors)
 
 export default router

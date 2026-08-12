@@ -5,11 +5,15 @@ import { ok, fail } from '../helpers/response.js'
 import { UPLOADS_DIR } from '../helpers/paths.js'
 import { removeFileIfExists } from '../services/storage.js'
 
-const toPublicUrl = (file) => `/uploads/${file.filename}`
+const toPublicUrl = (req, file) => {
+  const host = req.get('host')
+  const protocol = req.protocol
+  return `${protocol}://${host}/uploads/${file.filename}`
+}
 
 export const uploadFile = asyncHandler(async (req, res) => {
   if (!req.file) return fail(res, 400, 'No file uploaded')
-  ok(res, { url: toPublicUrl(req.file), name: req.file.originalname, size: req.file.size, type: path.extname(req.file.originalname) })
+  ok(res, { url: toPublicUrl(req, req.file), name: req.file.originalname, size: req.file.size, type: path.extname(req.file.originalname) })
 })
 
 export const uploadFiles = asyncHandler(async (req, res) => {
@@ -17,7 +21,7 @@ export const uploadFiles = asyncHandler(async (req, res) => {
   if (files.length === 0) return fail(res, 400, 'No files uploaded')
   ok(
     res,
-    files.map((f) => ({ url: toPublicUrl(f), name: f.originalname, size: f.size, type: path.extname(f.originalname) })),
+    files.map((f) => ({ url: toPublicUrl(req, f), name: f.originalname, size: f.size, type: path.extname(f.originalname) })),
   )
 })
 
