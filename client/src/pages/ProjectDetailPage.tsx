@@ -200,7 +200,7 @@ export function ProjectDetailPage() {
                     src={image}
                     alt={`${project.title} - screenshot ${index + 1}`}
                     loading="lazy"
-                    className="aspect-[16/10] w-full rounded-xl border border-border/60 object-cover transition-transform duration-300 hover:scale-[1.02]"
+                    className="w-full rounded-xl border border-border/60 transition-transform duration-300 hover:scale-[1.02]"
                     whileHover={{ y: -4 }}
                   />
                 ))}

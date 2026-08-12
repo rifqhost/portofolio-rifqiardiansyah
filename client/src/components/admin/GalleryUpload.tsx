@@ -80,7 +80,7 @@ export function GalleryUpload({ value, onChange, label = 'Galeri Foto' }: Galler
               <img
                 src={url}
                 alt={`Galeri ${index + 1}`}
-                className="aspect-[16/10] w-full rounded-lg border border-border object-cover"
+                className="w-full rounded-lg border border-border"
               />
               <Button
                 type="button"
