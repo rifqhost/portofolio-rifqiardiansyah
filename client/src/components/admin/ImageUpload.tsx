@@ -77,12 +77,12 @@ export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUplo
         <Button
           type="button"
           variant="outline"
-          size="icon"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          aria-label="Unggah gambar"
+          className="gap-2"
         >
           {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+          {uploading ? 'Mengunggah…' : 'Upload Foto'}
         </Button>
       </div>
       {resolving && (

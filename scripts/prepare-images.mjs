@@ -97,9 +97,6 @@ const PLACEHOLDERS = {
   'project-cbt.png': { w: 1200, h: 675, fn: diagonal('#1e1b4b', '#4f46e5') },
   'project-cbt-2.png': { w: 1200, h: 675, fn: diagonal('#312e81', '#6366f1') },
   'project-cbt-3.png': { w: 1200, h: 675, fn: diagonal('#1e1b4b', '#7c3aed') },
-  'project-guestbook.png': { w: 1200, h: 675, fn: diagonal('#0c4a6e', '#0ea5e9') },
-  'project-guestbook-2.png': { w: 1200, h: 675, fn: diagonal('#155e75', '#06b6d4') },
-  'project-guestbook-3.png': { w: 1200, h: 675, fn: diagonal('#164e63', '#22d3ee') },
 }
 
 // ---------------------------------------------------------------------------
