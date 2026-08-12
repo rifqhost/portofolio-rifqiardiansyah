@@ -477,7 +477,14 @@ async function requestLive<T>(path: string, options: RequestOptions): Promise<Ap
 
   if (!response.ok || !payload?.success) {
     const message = payload?.error?.message || `Request failed (${response.status})`
-    throw new ApiError(message, response.status)
+    const hint = response.status === 0
+      ? 'Tidak dapat terhubung ke server. Cek koneksi internet dan URL API.'
+      : response.status === 401
+        ? 'Sesi admin expired. Login ulang.'
+        : response.status === 404
+          ? `Endpoint tidak ditemukan: ${API_BASE}${path}. Pastikan backend sudah di-deploy dengan kode terbaru.`
+          : ''
+    throw new ApiError(`${message}${hint ? ` ${hint}` : ''}`, response.status)
   }
 
   return payload

@@ -1,6 +1,6 @@
 // FILE: client/src/pages/admin/AdminSettingsPage.tsx
 import { useEffect, useState, type FormEvent } from 'react'
-import { KeyRound, Loader2, Save, Settings2 } from 'lucide-react'
+import { KeyRound, Loader2, Save, Settings2, Download, Upload, FileJson } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -220,6 +220,100 @@ export function AdminSettingsPage() {
                   Ubah Password
                 </Button>
               </form>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <div className="flex items-center gap-3 border-b border-border/60 px-6 py-4">
+              <FileJson className="h-5 w-5 text-primary" />
+              <h2 className="font-display text-base font-semibold">Backup & Restore Data</h2>
+            </div>
+            <CardContent className="p-6">
+              <p className="text-sm text-muted-foreground">
+                Backup semua data portfolio (proyek, blog, profil, sertifikat, dll) ke file JSON.
+                Gunakan fitur ini sebelum deploy ulang backend agar data tidak hilang.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    try {
+                      const [projects, blog, profile, skills, education, experience, certificates, testimonials, config] =
+                        await Promise.all([
+                          api.get<any[]>('/projects?limit=1000'),
+                          api.get<any[]>('/blog?limit=1000'),
+                          api.get<any>('/profile'),
+                          api.get<any>('/skills'),
+                          api.get<any>('/education'),
+                          api.get<any>('/experience'),
+                          api.get<any>('/certificates'),
+                          api.get<any>('/testimonials'),
+                          api.get<any>('/config'),
+                        ])
+                      const backup = {
+                        exportedAt: new Date().toISOString(),
+                        data: {
+                          projects: projects.data,
+                          blog: blog.data,
+                          profile: profile.data,
+                          skills: skills.data,
+                          education: education.data,
+                          experience: experience.data,
+                          certificates: certificates.data,
+                          testimonials: testimonials.data,
+                          config: config.data,
+                        },
+                      }
+                      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' })
+                      const url = URL.createObjectURL(blob)
+                      const a = document.createElement('a')
+                      a.href = url
+                      a.download = `portfolio-backup-${new Date().toISOString().slice(0, 10)}.json`
+                      a.click()
+                      URL.revokeObjectURL(url)
+                      toast('Backup berhasil diunduh', 'success')
+                    } catch (err) {
+                      toast(err instanceof Error ? err.message : 'Gagal membuat backup', 'error')
+                    }
+                  }}
+                  className="gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  Backup Semua Data
+                </Button>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-secondary">
+                  <Upload className="h-4 w-4" />
+                  Restore dari Backup
+                  <input
+                    type="file"
+                    accept="application/json"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      try {
+                        const text = await file.text()
+                        const backup = JSON.parse(text)
+                        if (!backup.data) throw new Error('Format backup tidak valid')
+                        const data = backup.data
+                        if (data.projects) await api.put('/admin/config', { projects: data.projects })
+                        if (data.blog) await api.put('/admin/config', { blog: data.blog })
+                        if (data.profile) await api.put('/admin/profile', data.profile)
+                        if (data.skills) await api.put('/admin/certificates', { ...data.skills, items: [] })
+                        if (data.education) await api.put('/admin/certificates', { ...data.education, items: [] })
+                        if (data.experience) await api.put('/admin/certificates', { ...data.experience, items: [] })
+                        if (data.certificates) await api.put('/admin/certificates', data.certificates)
+                        if (data.testimonials) await api.put('/admin/certificates', { ...data.testimonials, items: [] })
+                        if (data.config) await api.put('/admin/config', data.config)
+                        toast('Data berhasil dipulihkan. Refresh halaman untuk melihat perubahan.', 'success')
+                        setTimeout(() => window.location.reload(), 1500)
+                      } catch (err) {
+                        toast(err instanceof Error ? err.message : 'Gagal memulihkan data', 'error')
+                      }
+                    }}
+                  />
+                </label>
+              </div>
             </CardContent>
           </Card>
         </>

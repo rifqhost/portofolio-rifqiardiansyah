@@ -1,5 +1,5 @@
 // FILE: client/src/pages/admin/AdminDashboardPage.tsx
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Eye,
@@ -11,16 +11,34 @@ import {
   Star,
   Wrench,
   BarChart3,
+  Globe,
+  Server,
+  RefreshCw,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useFetch } from '@/hooks/useFetch'
+import { api } from '@/services/api'
 import type { DashboardStats } from '@/types'
 import { cn } from '@/lib/utils'
 
 export function AdminDashboardPage() {
   const { data, loading, error, refetch } = useFetch<DashboardStats>('/admin/dashboard/stats')
+  const [apiHealth, setApiHealth] = useState<{ ok: boolean; url: string } | null>(null)
+  const [checking, setChecking] = useState(false)
+
+  const checkApiHealth = async () => {
+    setChecking(true)
+    try {
+      await api.get('/health')
+      setApiHealth({ ok: true, url: import.meta.env.VITE_API_URL || 'http://localhost:5000/api' })
+    } catch {
+      setApiHealth({ ok: false, url: import.meta.env.VITE_API_URL || 'http://localhost:5000/api' })
+    } finally {
+      setChecking(false)
+    }
+  }
 
   const statCards = useMemo(() => {
     const counts = data?.counts
@@ -49,6 +67,25 @@ export function AdminDashboardPage() {
           <Link to="/admin/projects">+ Proyek Baru</Link>
         </Button>
       </div>
+
+      <Card>
+        <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
+          <div className="flex items-center gap-2 text-sm">
+            <Server className="h-4 w-4 text-muted-foreground" />
+            <span className="text-muted-foreground">Backend:</span>
+            <span className="font-mono text-xs">{import.meta.env.VITE_API_URL || 'Tidak dikonfigurasi (mode statis/localStorage)'}</span>
+            {apiHealth && (
+              <span className={cn('text-xs', apiHealth.ok ? 'text-emerald-600' : 'text-destructive')}>
+                {apiHealth.ok ? '● Terhubung' : '● Gagal terhubung'}
+              </span>
+            )}
+          </div>
+          <Button variant="outline" size="sm" onClick={checkApiHealth} disabled={checking} className="gap-2">
+            {checking ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Globe className="h-4 w-4" />}
+            {checking ? 'Cek koneksi...' : 'Cek koneksi backend'}
+          </Button>
+        </CardContent>
+      </Card>
 
       {error && (
         <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
