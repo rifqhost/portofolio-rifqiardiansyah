@@ -121,7 +121,7 @@ export function ImageUpload({ value, onChange, label = 'Foto Utama' }: ImageUplo
           <img
             src={displaySrc}
             alt="Foto utama"
-            className="w-full rounded-lg border border-border"
+            className="max-h-64 w-full rounded-lg border border-border object-cover"
           />
           <Button
             type="button"
