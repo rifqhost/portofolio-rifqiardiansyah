@@ -1,6 +1,6 @@
 // FILE: client/src/components/admin/ImageUpload.tsx
 import { useRef, useState } from 'react'
-import { Loader2, Upload, X } from 'lucide-react'
+import { ImagePlus, Loader2, Plus, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { api } from '@/services/api'
@@ -13,11 +13,36 @@ interface ImageUploadProps {
   label?: string
 }
 
-export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, label = 'Foto Utama' }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const [draftUrl, setDraftUrl] = useState('')
   const [uploading, setUploading] = useState(false)
   const [resolving, setResolving] = useState(false)
   const [error, setError] = useState('')
+
+  const addUrl = async (url: string) => {
+    const trimmed = url.trim()
+    if (!trimmed) return
+    if (isImgbbPageLink(trimmed)) {
+      setResolving(true)
+      setError('')
+      try {
+        const resolved = await resolveImageUrl(trimmed)
+        if (resolved !== trimmed && resolved) {
+          onChange(resolved)
+        } else {
+          onChange(trimmed)
+        }
+      } catch {
+        onChange(trimmed)
+      } finally {
+        setResolving(false)
+      }
+    } else {
+      onChange(trimmed)
+    }
+    setDraftUrl('')
+  }
 
   const handleFile = async (file: File | undefined) => {
     if (!file) return
@@ -39,40 +64,52 @@ export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUplo
     }
   }
 
-  // Saat admin selesai mengisi URL (blur), link halaman ImgBB otomatis
-  // dikonversi ke direct image link agar bisa tampil di <img>.
-  const handleResolve = async () => {
-    const raw = value.trim()
-    if (!isImgbbPageLink(raw) || resolving) return
-    setResolving(true)
-    setError('')
-    try {
-      const resolved = await resolveImageUrl(raw)
-      if (resolved !== raw && resolved) {
-        onChange(resolved)
-      } else if (isImgbbPageLink(raw)) {
-        setError(
-          'Gagal mengonversi link ImgBB ke direct link. Coba buka link-nya, klik kanan gambar, salin alamat gambar, lalu tempel URL i.ibb.co.com langsung.',
-        )
-      }
-    } catch {
-      setError('Terjadi kesalahan saat mengonversi link ImgBB. Gunakan URL i.ibb.co.com langsung.')
-    } finally {
-      setResolving(false)
-    }
-  }
-
   return (
     <div className="space-y-3">
-      <div className="flex items-end gap-3">
-        <div className="flex-1 space-y-1.5">
-          <label className="text-sm font-medium text-muted-foreground">{label}</label>
-          <Input
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={handleResolve}
-            placeholder="/images/nama-foto.jpg atau https://ibb.co.com/…"
+      <p className="text-sm font-medium text-muted-foreground">{label}</p>
+
+      {value && (
+        <div className="group relative">
+          <img
+            src={value}
+            alt="Foto utama"
+            className="w-full rounded-lg border border-border"
           />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="absolute -right-1.5 -top-1.5 h-6 w-6 rounded-full bg-background text-destructive shadow-sm hover:bg-destructive hover:text-destructive-foreground"
+            onClick={() => onChange('')}
+            aria-label="Hapus foto utama"
+          >
+            <X className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      )}
+
+      {!value && (
+        <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-border text-sm text-muted-foreground">
+          Belum ada foto
+        </div>
+      )}
+
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <Input
+            value={draftUrl}
+            onChange={(e) => setDraftUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                addUrl(draftUrl)
+              }
+            }}
+            placeholder="Tempel URL gambar lalu Enter"
+          />
+          <Button type="button" variant="outline" size="icon" onClick={() => addUrl(draftUrl)} disabled={!draftUrl.trim()} aria-label="Tambah dari URL">
+            <Plus className="h-4 w-4" />
+          </Button>
         </div>
         <Button
           type="button"
@@ -81,13 +118,11 @@ export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUplo
           disabled={uploading}
           className="gap-2"
         >
-          {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+          {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
           {uploading ? 'Mengunggah…' : 'Upload Foto'}
         </Button>
       </div>
-      {resolving && (
-        <p className="text-xs text-muted-foreground">Mengonversi link ImgBB…</p>
-      )}
+
       <input
         ref={inputRef}
         type="file"
@@ -95,20 +130,11 @@ export function ImageUpload({ value, onChange, label = 'URL Gambar' }: ImageUplo
         className="hidden"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
-      {value && (
-        <div className="relative flex items-center gap-3 rounded-xl border border-border bg-secondary/40 p-3">
-          <img src={value} alt="preview" className="h-16 w-24 rounded-lg border border-border object-cover" />
-          <span className="truncate font-mono text-xs text-muted-foreground">{value}</span>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="ml-auto h-7 w-7"
-            onClick={() => onChange('')}
-            aria-label="Hapus gambar"
-          >
-            <X className="h-4 w-4" />
-          </Button>
+
+      {resolving && (
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          Mengonversi link ImgBB…
         </div>
       )}
       {error && <p className="text-xs text-destructive">{error}</p>}
