@@ -8,12 +8,20 @@ import routes from './routes/index.js'
 import { errorHandler, notFound } from './middleware/errorHandler.js'
 import { UPLOADS_DIR, DATA_DIR } from './helpers/paths.js'
 import { logger } from './utils/logger.js'
+import { initCloudinary } from './utils/cloudinary.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
 
 fs.mkdirSync(DATA_DIR, { recursive: true })
 fs.mkdirSync(UPLOADS_DIR, { recursive: true })
+
+if (process.env.CLOUDINARY_CLOUD_NAME) {
+  initCloudinary()
+  logger.ok('Cloudinary initialized')
+} else {
+  logger.warn('Cloudinary not configured - falling back to local filesystem uploads')
+}
 
 app.set('trust proxy', 1)
 
