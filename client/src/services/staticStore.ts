@@ -25,6 +25,7 @@ const OVERRIDES_KEY = 'portfolio_data_v1'
 const ADMIN_HASH_KEY = 'portfolio_admin_hash'
 const VISITORS_KEY = 'portfolio_visitors'
 export const MAX_UPLOAD_BYTES = 1.5 * 1024 * 1024
+export const MAX_RAW_UPLOAD_BYTES = 10 * 1024 * 1024
 
 type Overrides = Partial<Record<CollectionKey, unknown>>
 
@@ -134,13 +135,50 @@ export async function changePassword(currentPassword: string, newPassword: strin
   }
 }
 
-export function fileToDataUrl(file: File): Promise<string> {
+function readFileAsDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => resolve(String(reader.result))
     reader.onerror = () => reject(new Error('Gagal membaca file'))
     reader.readAsDataURL(file)
   })
+}
+
+// Kompres gambar (resize ke maks 1600px + re-encode) sebelum disimpan sebagai
+// data URL di localStorage. GIF animasi dipertahankan apa adanya.
+async function compressImage(file: File, maxDimension = 1600, quality = 0.82): Promise<string> {
+  const original = await readFileAsDataUrl(file)
+  if (file.type === 'image/gif') return original
+
+  const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(img)
+    img.onerror = () => reject(new Error('Gagal memproses gambar'))
+    img.src = original
+  })
+
+  const scale = Math.min(1, maxDimension / Math.max(image.width, image.height))
+  const width = Math.max(1, Math.round(image.width * scale))
+  const height = Math.max(1, Math.round(image.height * scale))
+
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return original
+  ctx.drawImage(image, 0, 0, width, height)
+
+  const type = file.type === 'image/png' ? 'image/webp' : 'image/jpeg'
+  const out = canvas.toDataURL(type, quality)
+  return out.length < original.length ? out : original
+}
+
+export async function fileToDataUrl(file: File): Promise<string> {
+  try {
+    return await compressImage(file)
+  } catch {
+    return readFileAsDataUrl(file)
+  }
 }
 
 export function pageMeta(total: number, page: number, limit: number): PageMeta {

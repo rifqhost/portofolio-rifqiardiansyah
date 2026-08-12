@@ -26,6 +26,7 @@ import {
   verifyLogin,
   fileToDataUrl,
   MAX_UPLOAD_BYTES,
+  MAX_RAW_UPLOAD_BYTES,
   type CollectionKey,
 } from './staticStore'
 import { slugify } from '@/utils/slug'
@@ -56,6 +57,17 @@ const ok = <T>(data: T, meta?: PageMeta): ApiResponse<T> => ({
 
 function requireAdmin() {
   if (!getToken()) throw new ApiError('Authentication required', 401)
+}
+
+// Simpan data ke localStorage; jika penuh, lempar error agar admin tahu
+// perubahannya TIDAK tersimpan (sebelumnya gagal diam-diam).
+function persistOrThrow(key: CollectionKey, data: unknown): void {
+  if (!writeCollection(key, data)) {
+    throw new ApiError(
+      'Penyimpanan gagal: penyimpanan browser (localStorage) penuh. Hapus data/foto lama atau gunakan URL gambar eksternal.',
+      500,
+    )
+  }
 }
 
 const SIMPLE_GET: Record<string, CollectionKey> = {
@@ -234,13 +246,19 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
   if (pathname === '/admin/upload' && method === 'POST') {
     const file = (options.body as FormData | null)?.get('file') as File | null
     if (!file) throw new ApiError('No file uploaded', 400)
-    if (file.size > MAX_UPLOAD_BYTES) {
+    if (file.size > MAX_RAW_UPLOAD_BYTES) {
       throw new ApiError(
-        'Ukuran file maksimal ±1.5MB agar muat di localStorage. Gunakan foto lebih kecil atau URL eksternal.',
+        'Ukuran file terlalu besar (±10MB). Gunakan foto lebih kecil atau URL eksternal.',
         400,
       )
     }
     const url = await fileToDataUrl(file)
+    if (url.length > MAX_UPLOAD_BYTES) {
+      throw new ApiError(
+        'Gambar terlalu besar setelah kompresi (±1.5MB). Gunakan foto lebih kecil atau URL eksternal.',
+        400,
+      )
+    }
     const result: UploadResult = { url, name: file.name, size: file.size, type: file.type }
     return ok(result)
   }
@@ -294,7 +312,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
   if (pathname === '/admin/config' && method === 'PUT') {
     const config = await readCollection<SiteConfig>('config')
     const updated: SiteConfig = { ...config, ...(body as Partial<SiteConfig>) }
-    writeCollection('config', updated)
+    persistOrThrow('config', updated)
     return ok(updated)
   }
 
@@ -310,7 +328,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
       ...incoming,
       items: Array.isArray(incoming.items) ? incoming.items : current.items || [],
     }
-    writeCollection('certificates', updated)
+    persistOrThrow('certificates', updated)
     return ok(updated)
   }
 
@@ -329,7 +347,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
       highlights: incoming.highlights ?? current.highlights,
       seo: { ...current.seo, ...incoming.seo },
     }
-    writeCollection('profile', updated)
+    persistOrThrow('profile', updated)
     return ok(updated)
   }
 
@@ -351,7 +369,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
     const projects = [...((await readCollection<Project[]>('projects')) || [])]
     const item = normalizeProject((body as Partial<Project>) || {}, null)
     projects.push(item)
-    writeCollection('projects', projects)
+    persistOrThrow('projects', projects)
     return ok(item)
   }
   if (/^\/admin\/projects\/[^/]+$/.test(pathname) && method === 'PUT') {
@@ -360,7 +378,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
     const index = projects.findIndex((p) => p.id === id)
     if (index === -1) throw new ApiError('Project not found', 404)
     projects[index] = normalizeProject((body as Partial<Project>) || {}, projects[index])
-    writeCollection('projects', projects)
+    persistOrThrow('projects', projects)
     return ok(projects[index])
   }
   if (/^\/admin\/projects\/[^/]+$/.test(pathname) && method === 'DELETE') {
@@ -368,7 +386,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
     const projects = (await readCollection<Project[]>('projects')) || []
     const filtered = projects.filter((p) => p.id !== id)
     if (filtered.length === projects.length) throw new ApiError('Project not found', 404)
-    writeCollection('projects', filtered)
+    persistOrThrow('projects', filtered)
     return ok({ deleted: true, id })
   }
 
@@ -390,7 +408,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
     const posts = [...((await readCollection<BlogPost[]>('blog')) || [])]
     const item = normalizePost((body as Partial<BlogPost>) || {}, null)
     posts.push(item)
-    writeCollection('blog', posts)
+    persistOrThrow('blog', posts)
     return ok(item)
   }
   if (/^\/admin\/blog\/[^/]+$/.test(pathname) && method === 'PUT') {
@@ -399,7 +417,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
     const index = posts.findIndex((p) => p.id === id)
     if (index === -1) throw new ApiError('Post not found', 404)
     posts[index] = normalizePost((body as Partial<BlogPost>) || {}, posts[index])
-    writeCollection('blog', posts)
+    persistOrThrow('blog', posts)
     return ok(posts[index])
   }
   if (/^\/admin\/blog\/[^/]+$/.test(pathname) && method === 'DELETE') {
@@ -407,7 +425,7 @@ async function handleStatic(path: string, options: RequestOptions): Promise<ApiR
     const posts = (await readCollection<BlogPost[]>('blog')) || []
     const filtered = posts.filter((p) => p.id !== id)
     if (filtered.length === posts.length) throw new ApiError('Post not found', 404)
-    writeCollection('blog', filtered)
+    persistOrThrow('blog', filtered)
     return ok({ deleted: true, id })
   }
 
