@@ -145,6 +145,9 @@ export function ProjectDetailPage() {
               <img
                 src={project.image || '/images/placeholder.svg'}
                 alt={project.title}
+                decoding="async"
+                width={1200}
+                height={675}
                 className="aspect-video w-full object-cover"
               />
             </motion.div>

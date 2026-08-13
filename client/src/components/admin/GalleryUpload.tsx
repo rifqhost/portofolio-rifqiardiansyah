@@ -128,6 +128,9 @@ export function GalleryUpload({ value, onChange, label = 'Galeri Foto' }: Galler
               <img
                 src={item.src}
                 alt={item.saved ? `Galeri ${item.id.split('-')[1]}` : 'Mengunggah...'}
+                decoding="async"
+                width={1200}
+                height={675}
                 className="aspect-video w-full rounded-lg border border-border object-cover"
               />
               <Button

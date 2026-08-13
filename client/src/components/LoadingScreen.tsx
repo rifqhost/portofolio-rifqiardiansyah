@@ -12,8 +12,13 @@ export function LoadingScreen() {
       setVisible(false)
       return
     }
-    const timer = window.setTimeout(() => setVisible(false), 1200)
-    return () => window.clearTimeout(timer)
+    const onReady = () => setVisible(false)
+    if (document.readyState === 'complete') {
+      onReady()
+    } else {
+      window.addEventListener('load', onReady, { once: true })
+      return () => window.removeEventListener('load', onReady)
+    }
   }, [reduced])
 
   return (

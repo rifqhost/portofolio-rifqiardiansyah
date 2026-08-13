@@ -123,6 +123,10 @@ function Hero() {
                   <img
                     src={profile?.avatar || '/images/avatar.webp'}
                     alt={profile?.name || 'Rifqi Ardiansyah'}
+                    width={512}
+                    height={512}
+                    fetchPriority="high"
+                    decoding="async"
                     className="aspect-square w-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent" />

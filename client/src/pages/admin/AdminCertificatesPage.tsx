@@ -230,7 +230,7 @@ export function AdminCertificatesPage() {
                 <Card key={certificate.id} className="overflow-hidden">
                   {certificate.image ? (
                     <div className="aspect-[16/9] overflow-hidden bg-secondary/50">
-                      <img src={certificate.image} alt={certificate.title} className="h-full w-full object-cover" />
+                      <img src={certificate.image} alt={certificate.title} decoding="async" width={1200} height={675} className="h-full w-full object-cover" />
                     </div>
                   ) : (
                     <div className="flex aspect-[16/9] items-center justify-center bg-gradient-to-br from-primary/15 to-accent/10">

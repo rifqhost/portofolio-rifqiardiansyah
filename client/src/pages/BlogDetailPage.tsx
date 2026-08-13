@@ -129,6 +129,9 @@ export function BlogDetailPage() {
             <img
               src={post.cover || '/images/placeholder.svg'}
               alt={post.title}
+              decoding="async"
+              width={1200}
+              height={675}
               className="mt-8 aspect-[16/9] w-full rounded-2xl border border-border/60 object-cover shadow-soft"
             />
           </Reveal>

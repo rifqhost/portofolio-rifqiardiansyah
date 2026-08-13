@@ -192,6 +192,9 @@ export function AdminBlogPage() {
               <img
                 src={post.cover || '/images/placeholder.svg'}
                 alt=""
+                decoding="async"
+                width={1200}
+                height={675}
                 className="h-16 w-24 shrink-0 rounded-lg border border-border object-cover"
               />
               <div className="min-w-0 flex-1">

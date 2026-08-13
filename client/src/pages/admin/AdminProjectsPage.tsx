@@ -204,11 +204,14 @@ export function AdminProjectsPage() {
           {filtered.map((project) => (
             <Card key={project.id} className="overflow-hidden">
               <div className="relative aspect-[16/9] bg-secondary/50">
-                <img
-                  src={project.image || '/images/placeholder.svg'}
-                  alt={project.title}
-                  className="h-full w-full object-cover"
-                />
+                  <img
+                    src={project.image || '/images/placeholder.svg'}
+                    alt={project.title}
+                    decoding="async"
+                    width={1200}
+                    height={675}
+                    className="h-full w-full object-cover"
+                  />
                 <Badge className="absolute left-3 top-3">{project.category}</Badge>
               </div>
               <div className="p-5">

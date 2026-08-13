@@ -135,6 +135,9 @@ export function AdminDashboardPage() {
                     <img
                       src={project.image || '/images/placeholder.svg'}
                       alt=""
+                      decoding="async"
+                      width={1200}
+                      height={675}
                       className="h-10 w-14 shrink-0 rounded-lg border border-border object-cover"
                     />
                     <div className="min-w-0 flex-1">

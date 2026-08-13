@@ -68,6 +68,9 @@ export function CertificatesPage() {
                           src={certificate.image}
                           alt={certificate.title}
                           loading="lazy"
+                          decoding="async"
+                          width={1200}
+                          height={675}
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                       </div>

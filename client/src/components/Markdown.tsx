@@ -131,7 +131,7 @@ export function Markdown({ content }: { content: string }) {
       const match = trimmed.match(/!\[([^\]]*)\]\(([^)]+)\)/)
       if (match) {
         blocks.push(
-          <img key={`img-${key++}`} src={match[2]} alt={match[1] || ''} className="my-4 rounded-xl border border-border" />,
+          <img key={`img-${key++}`} src={match[2]} alt={match[1] || ''} loading="lazy" decoding="async" width={1200} height={675} className="my-4 rounded-xl border border-border" />,
         )
         continue
       }
