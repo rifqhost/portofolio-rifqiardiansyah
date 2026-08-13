@@ -56,7 +56,7 @@ if (process.env.NODE_ENV === 'production') {
   if (fs.existsSync(distDir)) {
     app.use(express.static(distDir))
     app.use((req, res, next) => {
-      if (req.method !== 'GET' || req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      if (req.method !== 'GET' || req.originalUrl.startsWith('/api') || req.originalUrl.startsWith('/uploads')) {
         return next()
       }
       res.sendFile(path.join(distDir, 'index.html'))
