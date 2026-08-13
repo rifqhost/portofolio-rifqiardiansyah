@@ -108,9 +108,9 @@ Gambar dipakai langsung dari `client/public/images/`. Untuk mengganti, **timpa f
 
 | Konten       | File                                        | Ukuran |
 | ------------ | ------------------------------------------- | ------ |
-| Avatar       | `avatar.png`                                | 512×512 |
-| Proyek CBT   | `project-cbt.png`, `project-cbt-2.png`, `project-cbt-3.png` | 1200×675 |
-| Proyek Guestbook | `project-guestbook.png`, `project-guestbook-2.png`, `project-guestbook-3.png` | 1200×675 |
+| Avatar       | `avatar.webp`                               | 400×400 |
+| Proyek CBT   | `project-cbt.webp`, `project-cbt-2.webp`, `project-cbt-3.webp` | max 800px wide |
+| Proyek Guestbook | `project-guestbook.webp`, `project-guestbook-2.webp`, `project-guestbook-3.webp` | max 800px wide |
 | Blog REST API| `blog-rest-api.svg`                         | 1200×675 |
 | Blog React   | `blog-react.svg`                            | 1200×675 |
 | Blog JSON    | `blog-json.svg`                             | 1200×675 |
