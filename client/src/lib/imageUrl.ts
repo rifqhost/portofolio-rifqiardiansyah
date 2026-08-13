@@ -8,16 +8,6 @@
 // kadang muncul di share links.
 const IMGBB_PAGE_PATTERN = /^https?:\/\/(?:(?:www\.)?(?:ibb|imgbb)\.co?(?:\.com)?|i\.ibb\.co\.com)\/[A-Za-z0-9_-]+(?:\?.*)?$/
 
-const PROXIES = [
-  (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  (url: string) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-  (url: string) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-  (url: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-  (url: string) => `https://api.cors.lol/?url=${encodeURIComponent(url)}`,
-  (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url.replace('ibb.co.com', 'ibb.co'))}`,
-  (url: string) => `https://corsproxy.io/?url=${encodeURIComponent(url.replace('ibb.co.com', 'ibb.co'))}`,
-]
-
 // Cache hasil resolve per URL agar tidak fetch berulang saat submit.
 const resolveCache = new Map<string, string>()
 
@@ -48,8 +38,29 @@ function extractOgImage(html: string): string | null {
   return null
 }
 
+async function resolveViaBackend(pageUrl: string): Promise<string | null> {
+  try {
+    const base = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
+    if (!base) return null
+    const res = await fetch(`${base}/admin/resolve-image-url?url=${encodeURIComponent(pageUrl)}`)
+    if (!res.ok) return null
+    const data = (await res.json()) as { success?: boolean; data?: { url?: string } }
+    if (data?.success && data?.data?.url) return data.data.url
+    return null
+  } catch {
+    return null
+  }
+}
+
 async function fetchViaProxies(pageUrl: string): Promise<string | null> {
-  for (const buildProxyUrl of PROXIES) {
+  const proxies = [
+    (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    (u: string) => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+    (u: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+    (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u.replace('ibb.co.com', 'ibb.co'))}`,
+  ]
+
+  for (const buildProxyUrl of proxies) {
     try {
       const controller = new AbortController()
       const timeout = setTimeout(() => controller.abort(), 8000)
@@ -59,21 +70,20 @@ async function fetchViaProxies(pageUrl: string): Promise<string | null> {
       const text = await response.text()
       if (!text || text.length > 1_500_000) continue
 
-      // Proxy /get dari allorigins membungkus response dalam JSON { contents }
       let html = text
       if (text.trim().startsWith('{')) {
         try {
           const parsed = JSON.parse(text) as { contents?: string }
           if (typeof parsed.contents === 'string') html = parsed.contents
         } catch {
-          // biarkan text polos
+          // keep raw text
         }
       }
 
       const direct = extractOgImage(html)
       if (direct) return direct
     } catch {
-      // coba proxy berikutnya
+      // try next proxy
     }
   }
   return null
@@ -92,14 +102,18 @@ export async function resolveImageUrl(raw: string): Promise<string> {
   const cached = resolveCache.get(url)
   if (cached) return cached
 
-  const direct = await fetchViaProxies(url)
+  const direct = await resolveViaBackend(url)
   if (direct) {
     resolveCache.set(url, direct)
     return direct
   }
 
-  // Fallback: thumbnail ImgBB yang bisa ditebak dari ID halaman (tidak selalu tersedia).
-  // Biarkan URL asli tersimpan agar admin tetap bisa menyimpan datanya.
+  const fallback = await fetchViaProxies(url)
+  if (fallback) {
+    resolveCache.set(url, fallback)
+    return fallback
+  }
+
   return url
 }
 

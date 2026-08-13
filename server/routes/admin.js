@@ -38,4 +38,12 @@ router.post('/upload', uploadSingle, uploadFile)
 router.post('/upload/multiple', uploadMultiple, uploadFiles)
 router.delete('/upload/:name', deleteUpload)
 
+router.get('/resolve-image-url', (req, res) => {
+  const pageUrl = String(req.query.url || '').trim()
+  if (!pageUrl) return res.status(400).json({ success: false, error: { message: 'url is required' } })
+  resolveImageUrl(pageUrl)
+    .then((direct) => res.json({ success: true, data: { url: direct } }))
+    .catch((error) => res.status(500).json({ success: false, error: { message: error.message || 'Failed to resolve image url' } }))
+})
+
 export default router
